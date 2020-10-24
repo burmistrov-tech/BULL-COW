@@ -23,26 +23,13 @@ namespace BULL_COW
         private GameStatus Status { get; set; }
 
         public void Start()
-        {            
+        {
             while (true)
             {
                 ResetToDefault();
-                try
-                {
-                    Run();
-                    Over();
-                }
-                catch (ArgumentException e)
-                {
-                    Console.BackgroundColor = ConsoleColor.Red;
-                    Console.WriteLine($"\n{e.ParamName}");
-                    Console.WriteLine("The game will start again");
-                    Console.ResetColor();
-                }
-                finally
-                {
-                    TryToExit();
-                }
+                Run();
+                Over();
+                TryToExit();
             }
         }
 
@@ -51,18 +38,33 @@ namespace BULL_COW
             Console.WriteLine($"The system made a {Unknown.Length}-digit number.");
             while (Status == GameStatus.InProcess)
             {
-                Console.Write("Try to guess: ");
-                int[] answer = PrepareAnswer(Console.ReadLine() ??
-                    throw new ArgumentNullException("You interrupted the input"));
+                try
+                {
+                    Console.Write("Try to guess: ");
+                    int[] answer = PrepareAnswer(Console.ReadLine() ??
+                        throw new StopGameException());
 
-                (BULL_COW, int)[] result = Unknown.CompareTo(answer);
-                if (result.Length == NumberOfDigits && result.All(x => x.Item1 == BULL_COW.BULL))
-                    Status = GameStatus.Won;
-                else
-                    Lives--;
+                    (BULL_COW, int)[] result = Unknown.CompareTo(answer);
 
-                Array.ForEach(result, x =>
-                    Console.Write($"[{x.Item1} - {x.Item2}]"));
+                    if (result.Length == NumberOfDigits && result.All(x => x.Item1 == BULL_COW.BULL))
+                        Status = GameStatus.Won;
+                    else
+                        Lives--;
+
+                    Array.ForEach(result, x =>
+                        Console.Write($"[{x.Item1} - {x.Item2}]"));
+                }
+                catch (ArgumentException e)
+                {
+                    Console.BackgroundColor = ConsoleColor.Red;
+                    Console.WriteLine($"\n{e.ParamName}");
+                    Console.ResetColor();
+                }
+                catch (StopGameException)
+                {
+                    Console.WriteLine();
+                    break;
+                }
 
                 if (Lives <= 0)
                     Status = GameStatus.Lost;
@@ -113,4 +115,6 @@ namespace BULL_COW
             InProcess
         }
     }
+    class StopGameException : SystemException
+    { }
 }
