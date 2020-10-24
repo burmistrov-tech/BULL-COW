@@ -9,6 +9,11 @@ namespace BULL_COW
         {
             NumberOfLives = numberOfLives;
             NumberOfDigits = numberOfDigits;
+
+            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
+            {
+                e.Cancel = true;
+            };
         }
 
         public int NumberOfLives { get; }
@@ -18,11 +23,7 @@ namespace BULL_COW
         private GameStatus Status { get; set; }
 
         public void Start()
-        {
-            Console.CancelKeyPress += delegate (object sender, ConsoleCancelEventArgs e)
-            {
-                e.Cancel = true;
-            };
+        {            
             while (true)
             {
                 ResetToDefault();
