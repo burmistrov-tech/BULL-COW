@@ -17,11 +17,8 @@ namespace BULL_COW
 
         public (BULL_COW, int)[] CompareTo(int[] value)
         {
-            if (value == null)
-                throw new ArgumentNullException("Value cannot be null");
-
             if (Length != value.Length)
-                throw new ArgumentOutOfRangeException("The length of the values cannot be different");
+                throw new ArgumentOutOfRangeException($"The length of the values is {Length}. The length cannot be different");
 
             var result = new List<(BULL_COW, int)>();
             for (int i = 0; i < Length; i++)
