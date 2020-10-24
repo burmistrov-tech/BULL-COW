@@ -25,9 +25,7 @@ namespace BULL_COW
             };
             while (true)
             {
-                Status = GameStatus.InProcess;
-                Unknown = new RandomNumber(NumberOfDigits);
-                Lives = NumberOfLives;
+                ResetToDefault();
                 try
                 {
                     Run();
@@ -98,6 +96,13 @@ namespace BULL_COW
                         .Where(x => char.IsDigit(x))
                         .Select(x => x.ToString())
                         .ToArray(), int.Parse);
+        }
+
+        private void ResetToDefault()
+        {
+            Status = GameStatus.InProcess;
+            Unknown = new RandomNumber(NumberOfDigits);
+            Lives = NumberOfLives;
         }
 
         private enum GameStatus
